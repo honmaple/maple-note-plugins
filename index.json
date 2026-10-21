@@ -1,0 +1,14 @@
+[
+    {
+        "url": "blinko/blinko.js",
+        "name": "blinko"
+    },
+    {
+        "url": "siyuan/siyuan.js",
+        "name": "siyuan"
+    },
+    {
+        "url": "usememos/usememos.js",
+        "name": "usememos"
+    }
+]
