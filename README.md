@@ -13,37 +13,38 @@ You can also install a plugin individually using a direct URL to its JavaScript 
 | Plugin | Distribution file | Integration notes |
 | --- | --- | --- |
 | Memos | [usememos/usememos.js](usememos/usememos.js) | Targets Memos v0.24.2 |
+| Memos v0.31.0 | [usememos/usememos_v031.js](usememos/usememos_v031.js) | Targets Memos v0.31.0; includes SPACE visibility |
 | Blinko | [blinko/blinko.js](blinko/blinko.js) | Supports token or username/password authentication |
 | SiYuan | [siyuan/siyuan.js](siyuan/siyuan.js) | Each note maps to a document in the configured notebook |
 
 The plugin index is [index.json](index.json). Script paths are relative to the index directory. Preserve this directory structure when hosting the repository as static files. The remote service endpoint must be reachable from the Maple Note server.
 
-## Configuration
+## Service Comparison
+
+| Service | Plugin | Target version | Required settings | Authentication | Core features |
+| --- | --- | --- | --- | --- | --- |
+| Memos | `usememos` | v0.24.2 | `endpoint` | Token | Note management, attachment uploads and reuse |
+| Memos | `usememos_v031` | v0.31.0 | `endpoint` | Token | Note management, attachment uploads and reuse, SPACE visibility |
+| Blinko | `blinko` | — | `endpoint` | Token or username/password | Note management, attachment uploads and reuse |
+| SiYuan | `siyuan` | — | `endpoint`, `notebook` | API token | Document management, Markdown editing, asset uploads and previews |
 
 ### Memos
 
-- `endpoint`: Memos service URL.
-- `token`: Access token. Leave it empty to browse notes the instance makes publicly accessible. Creating, updating, and deleting notes require a token.
+The two versions use separate plugins, with no version parameter. Tokens are optional for browsing publicly accessible notes; v0.31.0 requires public access to be enabled in Memos. Creating, updating, and deleting notes require a token. Deletion archives notes rather than permanently deleting them.
 
-Supports local attachment uploads and external attachments. Local uploads require a Maple Note server with JSON attachment upload support. Updates replace the attachment list; an empty list removes all attachment associations. Deleting a note archives it rather than permanently deleting it.
+Supports local uploads and external attachments. Local uploads require a Maple Note server with JSON attachment upload support. Updates replace the full attachment list; an empty list removes all associations. When creating a note with SPACE visibility, set its space ID (`spaces/ID`) in the note form.
 
 ### Blinko
 
-- `endpoint`: Blinko service URL.
-- `token`: Access token. Takes precedence over username/password authentication.
-- `username`, `password`: Provide both when using account credentials instead of a token.
+A token takes precedence over account credentials. Provide both `username/password` when using account authentication. Without credentials, only publicly accessible notes can be browsed. Deletion moves notes to the recycle bin.
 
-Without credentials, you can browse notes the service makes publicly accessible. Supports local attachment uploads, importing attachments from URLs, and reusing existing attachments during updates. The integrated upsert API does not remove existing attachment associations, so attempts to remove them return an error; manage removal in Blinko. Deleting a note moves it to the recycle bin.
+Supports local uploads, imports from URLs, and attachment reuse. The current upsert API does not remove existing associations; removal returns an error and must be managed in Blinko.
 
 ### SiYuan
 
-- `endpoint`: SiYuan kernel service URL.
-- `notebook`: Notebook ID.
-- `token`: SiYuan API token. Leave it empty if the kernel does not require authentication.
+Each note maps to a document in the configured notebook. Tokens are optional if the kernel does not require authentication. Listing requires the SQL API and is unavailable in publishing mode.
 
-Supports paginated document browsing, Markdown editing, asset uploads, and authenticated previews. Listing documents relies on the SQL API and is unavailable in publishing mode.
-
-Updating replaces the document body and may regenerate child block IDs. SiYuan-specific block structures are not guaranteed to survive a Markdown round trip unchanged. Deleting uses SiYuan’s native document deletion API and may also delete child documents; a dedicated notebook is recommended. Removing an attachment removes its reference from the document without deleting the shared asset.
+Updates replace the document body, may regenerate child block IDs, and may not preserve SiYuan-specific block structures. Attachment removal deletes the document reference without deleting the shared asset. Native document deletion may also delete child documents; a dedicated notebook is recommended.
 
 ## Updates and Feedback
 

@@ -10,5 +10,9 @@
     {
         "url": "usememos/usememos.js",
         "name": "usememos"
+    },
+    {
+        "url": "usememos/usememos_v031.js",
+        "name": "usememos_v031"
     }
 ]
