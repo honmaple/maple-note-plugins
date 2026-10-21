@@ -1,4 +1,4 @@
-# Maple Note Remote Plugins
+# Maple Note Plugins
 
 English | [简体中文](README.zh-CN.md)
 
